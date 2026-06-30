@@ -9,16 +9,33 @@ if (toggle && nav) {
 
 const gymSearch = document.querySelector("#gymSearch");
 const gymCards = document.querySelectorAll(".review-card");
+const gymResultCount = document.querySelector("#gymResultCount");
 
-if (gymSearch && gymCards.length > 0) {
-  gymSearch.addEventListener("input", () => {
-    const searchText = gymSearch.value.toLowerCase().trim();
+function updateGymResults() {
+  if (!gymCards.length) return;
 
-    gymCards.forEach((card) => {
-      const cardText = card.textContent.toLowerCase();
-      const isMatch = cardText.includes(searchText);
+  const searchText = gymSearch ? gymSearch.value.toLowerCase().trim() : "";
+  let visibleCount = 0;
 
-      card.style.display = isMatch ? "" : "none";
-    });
+  gymCards.forEach((card) => {
+    const cardText = card.textContent.toLowerCase();
+    const isMatch = cardText.includes(searchText);
+
+    card.style.display = isMatch ? "" : "none";
+
+    if (isMatch) {
+      visibleCount += 1;
+    }
   });
+
+  if (gymResultCount) {
+    const reviewWord = visibleCount === 1 ? "review" : "reviews";
+    gymResultCount.textContent = `${visibleCount} ${reviewWord} shown`;
+  }
 }
+
+if (gymSearch) {
+  gymSearch.addEventListener("input", updateGymResults);
+}
+
+updateGymResults();
