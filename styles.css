@@ -332,3 +332,72 @@ footer {
     transform: none;
   }
 }
+
+
+.review-system-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.review-system-grid article {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.facility-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.checklist.compact {
+  gap: 0.55rem;
+}
+
+.score-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 1rem 0;
+}
+
+.score-row span {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.mini-list {
+  color: var(--muted);
+  padding-left: 1.2rem;
+}
+
+.mini-list.positive li::marker {
+  color: var(--accent);
+}
+
+.mini-list.negative li::marker {
+  color: var(--warm);
+}
+
+.review-card h3 {
+  margin-top: 1.35rem;
+  margin-bottom: 0.35rem;
+}
+
+@media (max-width: 760px) {
+  .review-system-grid,
+  .facility-columns {
+    grid-template-columns: 1fr;
+  }
+}
