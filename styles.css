@@ -401,3 +401,10 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+.review-card h2 {
+  margin-bottom: 0.4rem;
+}
+
+.review-card .score-row {
+  margin-top: 0.3rem;
+}
