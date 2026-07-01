@@ -916,7 +916,22 @@ allGyms.forEach((gym) => {
       </span>
     `;
   }
+  
+  function createPopupStarRating(averageScore) {
+    const width = averageScore === null ? 0 : (averageScore / 5) * 100;
+    const ratingText = averageScore === null ? "Not rated yet" : `${averageScore} / 5`;
 
+    return `
+      <div class="popup-rating">
+        <span class="star-rating popup-star-rating" aria-label="${ratingText}">
+          <span class="stars-empty">★★★★★</span>
+          <span class="stars-filled" style="width: ${width}%;">★★★★★</span>
+        </span>
+        <span class="popup-rating-text">${ratingText}</span>
+      </div>
+    `;
+  }
+  
   function renderCommunityRatings() {
     const grid = document.querySelector("#communityRatingGrid");
     if (!grid || typeof allGyms === "undefined") return;
@@ -1024,8 +1039,8 @@ allGyms.forEach((gym) => {
 
       form.reset();
 
-      renderCommunityRatings();
       renderLatestCommunityReviews();
+      updateMapPopupsWithRatings();
 
       const ratingCard = document.querySelector(`#rating-${gymId}`);
       if (ratingCard) {
@@ -1034,10 +1049,53 @@ allGyms.forEach((gym) => {
     });
   }
 
+function updateMapPopupsWithRatings() {
+  if (typeof allGyms === "undefined") return;
+  if (!window.gymMarkers) return;
+
+  allGyms.forEach((gym) => {
+    const gymId = getGymId(gym);
+    const marker = window.gymMarkers[gymId];
+
+    if (!marker) return;
+
+    const reviews = getStoredReviews(gymId);
+    const averageScore = calculateOverallAverage(reviews);
+    const popupRating = createPopupStarRating(averageScore);
+
+    const infoId = gym.infoId || `info-${slugifyGymName(gym.name)}`;
+
+    const reviewLink = gym.reviewId
+      ? ` · <a href="#${gym.reviewId}">Review ↓</a>`
+      : "";
+
+    marker.setPopupContent(`
+      <strong>${gym.name}</strong>
+      <div class="popup-line">${gym.area}</div>
+      <div class="popup-line">${gym.type}</div>
+      ${popupRating}
+      <div class="popup-line">${gym.address}</div>
+      <div class="popup-line"><strong class="popup-label">Opening hours:</strong> ${gym.hours}</div>
+      <div class="popup-links">
+        <a href="${gym.googleMaps}" target="_blank" rel="noopener">Google Maps</a> ·
+        <a href="${gym.appleMaps}" target="_blank" rel="noopener">Apple Maps</a>
+      </div>
+      <div class="popup-links">
+        <a href="#${infoId}">Basic info ↓</a>${reviewLink}
+      </div>
+    `);
+  });
+}
+
   populateGymReviewDropdown();
-  renderCommunityRatings();
   renderLatestCommunityReviews();
   setupGlobalReviewForm();
+  updateMapPopupsWithRatings();
+  
+  populateGymReviewDropdown();
+  renderLatestCommunityReviews();
+  setupGlobalReviewForm();
+  updateMapPopupsWithRatings();
 </script>
 
 <script>
