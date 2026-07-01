@@ -819,7 +819,144 @@ allGyms.forEach((gym) => {
     }
   }
 </script>
+
+<script>
+  const defaultReviews = {
+    "butterfly-climbing-gym": [
+      {
+        reviewer: "Climber's Corner",
+        routes: 5,
+        space: 4,
+        staff: 4,
+        comment: "Technical setting, some powerful routes, and thoughtful details around the gym."
+      }
+    ]
+  };
+
+  function getStoredReviews(gymId) {
+    const stored = localStorage.getItem(`reviews-${gymId}`);
+
+    if (stored) {
+      return JSON.parse(stored);
+    }
+
+    return defaultReviews[gymId] || [];
+  }
+
+  function saveStoredReviews(gymId, reviews) {
+    localStorage.setItem(`reviews-${gymId}`, JSON.stringify(reviews));
+  }
+
+  function roundToOneDecimal(number) {
+    return Math.round(number * 10) / 10;
+  }
+
+  function calculateAverage(reviews, key) {
+    if (!reviews.length) return null;
+
+    const total = reviews.reduce((sum, review) => {
+      return sum + Number(review[key]);
+    }, 0);
+
+    return roundToOneDecimal(total / reviews.length);
+  }
+
+  function calculateOverallReviewAverage(review) {
+    return (Number(review.routes) + Number(review.space) + Number(review.staff)) / 3;
+  }
+
+  function calculateOverallAverage(reviews) {
+    if (!reviews.length) return null;
+
+    const total = reviews.reduce((sum, review) => {
+      return sum + calculateOverallReviewAverage(review);
+    }, 0);
+
+    return roundToOneDecimal(total / reviews.length);
+  }
+
+  function renderReviews(gymId) {
+    const ratingBlock = document.querySelector(`[data-gym-rating="${gymId}"]`);
+    if (!ratingBlock) return;
+
+    const reviews = getStoredReviews(gymId);
+
+    const averageScore = calculateOverallAverage(reviews);
+    const routesAverage = calculateAverage(reviews, "routes");
+    const spaceAverage = calculateAverage(reviews, "space");
+    const staffAverage = calculateAverage(reviews, "staff");
+
+    const averageScoreElement = ratingBlock.querySelector("[data-average-score]");
+    const starFillElement = ratingBlock.querySelector("[data-star-fill]");
+    const routesAverageElement = ratingBlock.querySelector("[data-routes-average]");
+    const spaceAverageElement = ratingBlock.querySelector("[data-space-average]");
+    const staffAverageElement = ratingBlock.querySelector("[data-staff-average]");
+    const reviewCountElement = ratingBlock.querySelector("[data-review-count]");
+    const submittedReviewsElement = ratingBlock.querySelector(`[data-submitted-reviews="${gymId}"]`);
+
+    if (averageScore === null) {
+      averageScoreElement.textContent = "Not rated yet";
+      starFillElement.style.width = "0%";
+    } else {
+      averageScoreElement.textContent = `${averageScore} / 5`;
+      starFillElement.style.width = `${(averageScore / 5) * 100}%`;
+    }
+
+    routesAverageElement.textContent = routesAverage === null ? "—" : `${routesAverage} / 5`;
+    spaceAverageElement.textContent = spaceAverage === null ? "—" : `${spaceAverage} / 5`;
+    staffAverageElement.textContent = staffAverage === null ? "—" : `${staffAverage} / 5`;
+    reviewCountElement.textContent = reviews.length;
+
+    submittedReviewsElement.innerHTML = reviews
+      .map((review) => {
+        const reviewer = review.reviewer || "Anonymous climber";
+        const overall = roundToOneDecimal(calculateOverallReviewAverage(review));
+
+        return `
+          <article class="user-review">
+            <strong>${reviewer}</strong>
+            <span>${overall} / 5 overall · Routes ${review.routes} · Space ${review.space} · Staff ${review.staff}</span>
+            ${review.comment ? `<p>${review.comment}</p>` : ""}
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  function setupReviewForms() {
+    const forms = document.querySelectorAll("[data-review-form]");
+
+    forms.forEach((form) => {
+      const gymId = form.dataset.reviewForm;
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        const newReview = {
+          reviewer: formData.get("reviewer").trim(),
+          routes: Number(formData.get("routes")),
+          space: Number(formData.get("space")),
+          staff: Number(formData.get("staff")),
+          comment: formData.get("comment").trim()
+        };
+
+        const reviews = getStoredReviews(gymId);
+        reviews.push(newReview);
+        saveStoredReviews(gymId, reviews);
+
+        form.reset();
+        renderReviews(gymId);
+      });
+
+      renderReviews(gymId);
+    });
+  }
+
+  setupReviewForms();
+</script>
   
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
