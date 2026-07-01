@@ -96,13 +96,11 @@
     </section>
    
     <section class="content-block" id="community-ratings">
-      <h2>Community ratings</h2>
+      <h2>Community reviews</h2>
       <p class="section-intro">
         Choose a gym, add a rating, and the average score will update automatically.
         Reviews saved here are currently stored in your own browser for testing.
       </p>
-
-      <div id="communityRatingGrid" class="rating-card-grid"></div>
 
       <form id="globalReviewForm" class="review-form global-review-form">
         <h3>Add your review</h3>
@@ -780,7 +778,8 @@
     }).addTo(gymMap);
 
     const markers = [];
-
+    window.gymMarkers = {};
+    
 allGyms.forEach((gym) => {
   const infoId = gym.infoId || `info-${slugifyGymName(gym.name)}`;
 
@@ -805,6 +804,13 @@ allGyms.forEach((gym) => {
     </div>
   `);
 
+  const gymId = gym.reviewId
+    ? gym.reviewId.replace("review-", "")
+    : gym.infoId
+      ? gym.infoId.replace("info-", "")
+      : slugifyGymName(gym.name);
+
+  window.gymMarkers[gymId] = marker;
   markers.push(marker);
 });
 
