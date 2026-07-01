@@ -668,3 +668,19 @@ footer {
 .dynamic-star-rating .stars-filled {
   transition: width 0.25s ease;
 }
+.popup-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.popup-star-rating {
+  font-size: 1rem;
+}
+
+.popup-rating-text {
+  font-weight: 900;
+  color: var(--ink);
+}
