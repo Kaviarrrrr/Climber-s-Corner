@@ -444,3 +444,27 @@ footer {
   color: var(--muted);
   font-size: 0.95rem;
 }
+
+.star-rating {
+  position: relative;
+  display: inline-block;
+  width: max-content;
+  font-size: 1.4rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.stars-empty {
+  display: block;
+  color: var(--line);
+}
+
+.stars-filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  color: var(--warm);
+  overflow: hidden;
+  white-space: nowrap;
+}
