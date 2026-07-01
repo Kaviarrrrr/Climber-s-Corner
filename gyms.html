@@ -704,34 +704,32 @@
 
     const markers = [];
 
-    allGyms.forEach((gym) => {
-      const marker = L.marker(gym.coordinates).addTo(gymMap);
+allGyms.forEach((gym) => {
+  const infoId = gym.infoId || `info-${slugifyGymName(gym.name)}`;
 
-      const basicInfoLink = gym.infoId
-        ? `<a href="#${gym.infoId}">Basic info ↓</a> · `
-        : "";
+  const reviewLink = gym.reviewId
+    ? ` · <a href="#${gym.reviewId}">Review ↓</a>`
+    : "";
 
-      const reviewLink = gym.reviewId
-        ? `<a href="#${gym.reviewId}">Review ↓</a><br>`
-        : "";
+  const marker = L.marker(gym.coordinates).addTo(gymMap);
 
-      marker.bindPopup(`
-        <strong>${gym.name}</strong>
-        <div class="popup-line">${gym.area}</div>
-        <div class="popup-line">${gym.type}</div>
-        <div class="popup-line">${gym.address}</div>
-        <div class="popup-line"><strong class="popup-label">Opening hours:</strong> ${gym.hours}</div>
-        <div class="popup-links">
-          <a href="${gym.googleMaps}" target="_blank" rel="noopener">Google Maps</a> ·
-          <a href="${gym.appleMaps}" target="_blank" rel="noopener">Apple Maps</a>
-        </div>
-        <div class="popup-links">
-          <a href="#${infoId}">Basic info ↓</a>${reviewLink}
-        </div>
-`      );
-      
-      markers.push(marker);
-    });
+  marker.bindPopup(`
+    <strong>${gym.name}</strong>
+    <div class="popup-line">${gym.area}</div>
+    <div class="popup-line">${gym.type}</div>
+    <div class="popup-line">${gym.address}</div>
+    <div class="popup-line"><strong class="popup-label">Opening hours:</strong> ${gym.hours}</div>
+    <div class="popup-links">
+      <a href="${gym.googleMaps}" target="_blank" rel="noopener">Google Maps</a> ·
+      <a href="${gym.appleMaps}" target="_blank" rel="noopener">Apple Maps</a>
+    </div>
+    <div class="popup-links">
+      <a href="#${infoId}">Basic info ↓</a>${reviewLink}
+    </div>
+  `);
+
+  markers.push(marker);
+});
 
     if (markers.length > 0) {
       const group = L.featureGroup(markers);
