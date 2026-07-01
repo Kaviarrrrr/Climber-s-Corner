@@ -95,6 +95,88 @@
       <p class="map-note">Map data © OpenStreetMap contributors. Pin locations are based on the listed addresses and should be checked against the official map links before visiting.</p>
     </section>
    
+    <section class="content-block" id="community-ratings">
+      <h2>Community ratings</h2>
+      <p class="section-intro">
+        Choose a gym, add a rating, and the average score will update automatically.
+        Reviews saved here are currently stored in your own browser for testing.
+      </p>
+
+      <div id="communityRatingGrid" class="rating-card-grid"></div>
+
+      <form id="globalReviewForm" class="review-form global-review-form">
+        <h3>Add your review</h3>
+
+        <label>
+          Which gym are you reviewing?
+          <select name="gymId" id="reviewGymSelect" required>
+            <option value="">Choose a gym</option>
+          </select>
+        </label>
+
+        <label>
+          Your name or nickname
+          <input type="text" name="reviewer" placeholder="Optional" />
+        </label>
+
+        <label>
+          Routes
+          <select name="routes" required>
+            <option value="">Choose rating</option>
+            <option value="5">5 / 5</option>
+            <option value="4.5">4.5 / 5</option>
+            <option value="4">4 / 5</option>
+            <option value="3.5">3.5 / 5</option>
+            <option value="3">3 / 5</option>
+            <option value="2.5">2.5 / 5</option>
+            <option value="2">2 / 5</option>
+            <option value="1.5">1.5 / 5</option>
+            <option value="1">1 / 5</option>
+          </select>
+        </label>
+
+        <label>
+          Space
+          <select name="space" required>
+            <option value="">Choose rating</option>
+            <option value="5">5 / 5</option>
+            <option value="4.5">4.5 / 5</option>
+            <option value="4">4 / 5</option>
+            <option value="3.5">3.5 / 5</option>
+            <option value="3">3 / 5</option>
+            <option value="2.5">2.5 / 5</option>
+            <option value="2">2 / 5</option>
+            <option value="1.5">1.5 / 5</option>
+            <option value="1">1 / 5</option>
+          </select>
+        </label>
+
+        <label>
+          Staff/Service
+          <select name="staff" required>
+            <option value="">Choose rating</option>
+            <option value="5">5 / 5</option>
+            <option value="4.5">4.5 / 5</option>
+            <option value="4">4 / 5</option>
+            <option value="3.5">3.5 / 5</option>
+            <option value="3">3 / 5</option>
+            <option value="2.5">2.5 / 5</option>
+            <option value="2">2 / 5</option>
+            <option value="1.5">1.5 / 5</option>
+            <option value="1">1 / 5</option>
+          </select>
+        </label>
+
+        <label>
+          Written review
+          <textarea name="comment" rows="4" placeholder="Share your experience..."></textarea>
+        </label>
+
+        <button type="submit" class="button">Submit review</button>
+      </form>
+
+      <div id="latestCommunityReviews" class="submitted-reviews"></div>
+    </section>
     
     <section class="review-grid">
       <article class="review-card" id="butterfly-climbing-gym">
@@ -105,94 +187,7 @@
             <span class="stars-filled" style="width: 90%;">★★★★★</span>
           </span>
         </div>
-<div class="community-rating" data-gym-rating="butterfly-climbing-gym">
-  <div class="rating-summary">
-    <div>
-      <p class="rating-label">Community rating</p>
-      <p class="average-score">
-        <span data-average-score>Not rated yet</span>
-      </p>
-    </div>
 
-    <span class="star-rating dynamic-star-rating" aria-label="Average rating">
-      <span class="stars-empty">★★★★★</span>
-      <span class="stars-filled" data-star-fill style="width: 0%;">★★★★★</span>
-    </span>
-  </div>
-
-  <div class="score-row dynamic-score-row">
-    <span>Routes: <span data-routes-average>—</span></span>
-    <span>Space: <span data-space-average>—</span></span>
-    <span>Staff/Service: <span data-staff-average>—</span></span>
-    <span><span data-review-count>0</span> reviews</span>
-  </div>
-
-  <form class="review-form" data-review-form="butterfly-climbing-gym">
-    <h3>Add your review</h3>
-
-    <label>
-      Your name or nickname
-      <input type="text" name="reviewer" placeholder="Optional" />
-    </label>
-
-    <label>
-      Routes
-      <select name="routes" required>
-        <option value="">Choose rating</option>
-        <option value="5">5 / 5</option>
-        <option value="4.5">4.5 / 5</option>
-        <option value="4">4 / 5</option>
-        <option value="3.5">3.5 / 5</option>
-        <option value="3">3 / 5</option>
-        <option value="2.5">2.5 / 5</option>
-        <option value="2">2 / 5</option>
-        <option value="1.5">1.5 / 5</option>
-        <option value="1">1 / 5</option>
-      </select>
-    </label>
-
-    <label>
-      Space
-      <select name="space" required>
-        <option value="">Choose rating</option>
-        <option value="5">5 / 5</option>
-        <option value="4.5">4.5 / 5</option>
-        <option value="4">4 / 5</option>
-        <option value="3.5">3.5 / 5</option>
-        <option value="3">3 / 5</option>
-        <option value="2.5">2.5 / 5</option>
-        <option value="2">2 / 5</option>
-        <option value="1.5">1.5 / 5</option>
-        <option value="1">1 / 5</option>
-      </select>
-    </label>
-
-    <label>
-      Staff/Service
-      <select name="staff" required>
-        <option value="">Choose rating</option>
-        <option value="5">5 / 5</option>
-        <option value="4.5">4.5 / 5</option>
-        <option value="4">4 / 5</option>
-        <option value="3.5">3.5 / 5</option>
-        <option value="3">3 / 5</option>
-        <option value="2.5">2.5 / 5</option>
-        <option value="2">2 / 5</option>
-        <option value="1.5">1.5 / 5</option>
-        <option value="1">1 / 5</option>
-      </select>
-    </label>
-
-    <label>
-      Written review
-      <textarea name="comment" rows="4" placeholder="Share your experience..."></textarea>
-    </label>
-
-    <button type="submit" class="button">Submit review</button>
-  </form>
-
-  <div class="submitted-reviews" data-submitted-reviews="butterfly-climbing-gym"></div>
-</div>
 <div class="basic-info-box">
   <h3>Basic information</h3>
   <dl class="basic-info-list">
