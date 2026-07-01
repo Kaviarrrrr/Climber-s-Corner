@@ -432,73 +432,323 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
-  <script>
-    const reviewedGyms = [
-      {
-        name: "Butterfly Climbing Gym",
-        location: "Kwai Chung, Hong Kong",
-        type: "Bouldering; top rope for kids only",
-        rating: "4.5 / 5",
-        coordinates: [22.355551, 114.125293],
-        reviewId: "butterfly-climbing-gym",
-        googleMaps: "https://www.google.com/maps/search/?api=1&query=14A%20Magnet%20Place%20Tower%202%2038-42%20Kwai%20Fung%20Crescent%20Butterfly%20Climbing%20Gym",
-        appleMaps: "https://maps.apple.com/place?place-id=I616941B56857962&address=Tower+2%2C+38+Kwai+Fung+Crescent%2C+Kwai+Chung%2C+New+Territories%2C+Hong+Kong+SAR%2C+China&coordinate=22.355551%2C114.125293&name=Butterfly+Climbing+Gym&_provider=9902"
-      },
-      {
-        name: "Keep Climbing",
-        location: "Sheung Wan, Hong Kong Island",
-        type: "Bouldering",
-        rating: "4.5 / 5",
-        coordinates: [22.2877, 114.1489],
-        reviewId: "keep-climbing",
-        googleMaps: "https://www.google.com/maps/search/?api=1&query=Keep%20Climbing%20Gym%20Unit%206%202%2FF%20Wayson%20Commercial%20Building%2028%20Connaught%20Road%20West%20Sheung%20Wan%20Hong%20Kong",
-        appleMaps: "https://maps.apple.com/?q=Keep%20Climbing%20Gym%2028%20Connaught%20Road%20West%20Sheung%20Wan%20Hong%20Kong"
-      },
-      {
-        name: "Project Climb & Boulder HK",
-        location: "Kowloon Bay, Hong Kong",
-        type: "Bouldering",
-        rating: "4.5 / 5",
-        coordinates: [22.3233, 114.2096],
-        reviewId: "project-climb-boulder-hk",
-        googleMaps: "https://www.google.com/maps/search/?api=1&query=Project%20Climb%20Boulder%20HK%20Room%2011%202%2FF%20Metro%20Centre%20I%2032%20Lam%20Hing%20Street%20Kowloon%20Bay%20Hong%20Kong",
-        appleMaps: "https://maps.apple.com/?q=Project%20Climb%20Boulder%20HK%2032%20Lam%20Hing%20Street%20Kowloon%20Bay%20Hong%20Kong"
-      }
-    ];
-
-    const gymMapElement = document.querySelector("#gymMap");
-
-    if (gymMapElement && typeof L !== "undefined") {
-      const gymMap = L.map("gymMap", { scrollWheelZoom: false }).setView([22.3193, 114.1694], 11);
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(gymMap);
-
-      const markers = [];
-
-      reviewedGyms.forEach((gym) => {
-        const marker = L.marker(gym.coordinates).addTo(gymMap);
-        marker.bindPopup(`
-          <strong>${gym.name}</strong>
-          ${gym.location}<br>
-          ${gym.type}<br>
-          Overall: ${gym.rating}<br>
-          <a href="${gym.googleMaps}" target="_blank" rel="noopener">Google Maps</a> ·
-          <a href="${gym.appleMaps}" target="_blank" rel="noopener">Apple Maps</a><br>
-          <a href="#${gym.reviewId}">Read review ↓</a>
-        `);
-        markers.push(marker);
-      });
-
-      if (markers.length > 0) {
-        const group = L.featureGroup(markers);
-        gymMap.fitBounds(group.getBounds().pad(0.18));
-      }
+<script>
+  const allGyms = [
+    {
+      name: "JUST CLIMB – Shek Mun",
+      area: "Shek Mun / Sha Tin",
+      address: "Room 4, G/F, Block A, New Trade Plaza, 6 On Ping Street, Sha Tin",
+      hours: "Mon–Fri 2pm–11pm; Sat/Sun/PH 10am–8pm",
+      contact: "WhatsApp/Phone: +852 6499 1668; Email: info@justclimb.hk",
+      type: "Bouldering",
+      coordinates: [22.3896, 114.2086],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=JUST%20CLIMB%20Shek%20Mun%20New%20Trade%20Plaza%206%20On%20Ping%20Street%20Sha%20Tin",
+      appleMaps: "https://maps.apple.com/?q=JUST%20CLIMB%20Shek%20Mun%20New%20Trade%20Plaza%206%20On%20Ping%20Street%20Sha%20Tin"
+    },
+    {
+      name: "JUST CLIMB – Tai Koo",
+      area: "Quarry Bay / Tai Koo",
+      address: "Shop 1, 6/F, 1001 King’s Road, Quarry Bay",
+      hours: "Mon–Fri 2pm–11pm; Sat/Sun/PH 10am–8pm",
+      contact: "WhatsApp/Phone: +852 6499 1668; Email: info@justclimb.hk",
+      type: "Bouldering",
+      coordinates: [22.2868, 114.2125],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=JUST%20CLIMB%20Tai%20Koo%201001%20King%27s%20Road%20Quarry%20Bay",
+      appleMaps: "https://maps.apple.com/?q=JUST%20CLIMB%20Tai%20Koo%201001%20King%27s%20Road%20Quarry%20Bay"
+    },
+    {
+      name: "JUST CLIMB – Tseung Kwan O",
+      area: "Tseung Kwan O",
+      address: "Shops 120C & 120D, 1/F, Ocean PopWalk, 28 Tong Chun Street, TKO",
+      hours: "Mon–Fri 2pm–11pm; Sat/Sun/PH 10am–8pm",
+      contact: "WhatsApp/Phone: +852 6499 1668; Email: info@justclimb.hk",
+      type: "Bouldering / kids classes",
+      coordinates: [22.3074, 114.2605],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=JUST%20CLIMB%20Tseung%20Kwan%20O%20Ocean%20PopWalk%2028%20Tong%20Chun%20Street",
+      appleMaps: "https://maps.apple.com/?q=JUST%20CLIMB%20Tseung%20Kwan%20O%20Ocean%20PopWalk%2028%20Tong%20Chun%20Street"
+    },
+    {
+      name: "JUST CLIMB – Tsuen Wan",
+      area: "Tsuen Wan",
+      address: "Shop 802, 8/F, Plaza 88, 88 Yeung Uk Road, Tsuen Wan",
+      hours: "Mon–Fri 1pm–10pm; Sat/Sun/PH 10am–8pm",
+      contact: "Email: info@justclimb.hk",
+      type: "Bouldering",
+      coordinates: [22.3708, 114.1160],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=JUST%20CLIMB%20Tsuen%20Wan%20Plaza%2088%2088%20Yeung%20Uk%20Road",
+      appleMaps: "https://maps.apple.com/?q=JUST%20CLIMB%20Tsuen%20Wan%20Plaza%2088%2088%20Yeung%20Uk%20Road"
+    },
+    {
+      name: "JUST CLIMB – San Po Kong",
+      area: "San Po Kong",
+      address: "Flat D, G/F, Prince Industrial Building, 706 Prince Edward Road East / 106 King Fuk Street, San Po Kong",
+      hours: "Mon–Fri 2pm–11pm; Sat/Sun/PH 10am–8pm",
+      contact: "Phone: +852 3561 7868; Email: info@justclimb.hk",
+      type: "Bouldering + top rope",
+      coordinates: [22.3369, 114.1990],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=JUST%20CLIMB%20San%20Po%20Kong%20Prince%20Industrial%20Building",
+      appleMaps: "https://maps.apple.com/?q=JUST%20CLIMB%20San%20Po%20Kong%20Prince%20Industrial%20Building"
+    },
+    {
+      name: "JUST CLIMB – Tuen Mun",
+      area: "Tuen Mun",
+      address: "4 Kin Fat Lane, Tuen Mun",
+      hours: "Mon–Fri 1pm–10pm; Sat/Sun/PH 10am–8pm",
+      contact: "Phone: +852 2416 3968; Email: info@justclimb.hk",
+      type: "Bouldering",
+      coordinates: [22.3944, 113.9767],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=JUST%20CLIMB%20Tuen%20Mun%204%20Kin%20Fat%20Lane",
+      appleMaps: "https://maps.apple.com/?q=JUST%20CLIMB%20Tuen%20Mun%204%20Kin%20Fat%20Lane"
+    },
+    {
+      name: "JUST CLIMB – Kai Tak Sports Park",
+      area: "Kai Tak",
+      address: "Climbing Wall, Kai Tak Sports Avenue, outside Kai Tak Arena",
+      hours: "Mon–Fri 11am–11pm; Sat 10am–11pm; Sun/PH check official updates",
+      contact: "Email: info@justclimb.hk",
+      type: "Lead wall, speed wall, top rope, auto-belay top rope",
+      coordinates: [22.3237, 114.2027],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=JUST%20CLIMB%20Kai%20Tak%20Sports%20Park%20Climbing%20Wall",
+      appleMaps: "https://maps.apple.com/?q=JUST%20CLIMB%20Kai%20Tak%20Sports%20Park%20Climbing%20Wall"
+    },
+    {
+      name: "Hong Kong Climbing Park",
+      area: "Sha Tin",
+      address: "Level 2, Belair Gardens Shopping Arcade Phase 2, 52 Tai Chung Kiu Road, Sha Tin",
+      hours: "Mon–Fri 2pm–10pm; Sat/Sun/PH 11am–8pm",
+      contact: "Tel: +852 3708 9075; Email: info@hkclimbingpark.com",
+      type: "Indoor climbing, roped climbing / auto-belay style setup, bouldering/training facilities",
+      coordinates: [22.3824, 114.1953],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Hong%20Kong%20Climbing%20Park%20Belair%20Gardens%2052%20Tai%20Chung%20Kiu%20Road%20Sha%20Tin",
+      appleMaps: "https://maps.apple.com/?q=Hong%20Kong%20Climbing%20Park%20Belair%20Gardens%2052%20Tai%20Chung%20Kiu%20Road%20Sha%20Tin"
+    },
+    {
+      name: "Top Out Climbing",
+      area: "Tuen Mun",
+      address: "Shop LG126, Shan King Commercial Centre, 1 Ming Kum Road, Tuen Mun",
+      hours: "Mon–Fri 2pm–10pm; Sat/Sun 10am–8pm",
+      contact: "Phone: +852 2886 8418; IG: @topout_climbinghk",
+      type: "Bouldering, top rope, adjustable training board",
+      coordinates: [22.4062, 113.9687],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Top%20Out%20Climbing%20Shan%20King%20Commercial%20Centre%201%20Ming%20Kum%20Road%20Tuen%20Mun",
+      appleMaps: "https://maps.apple.com/?q=Top%20Out%20Climbing%20Shan%20King%20Commercial%20Centre%201%20Ming%20Kum%20Road%20Tuen%20Mun"
+    },
+    {
+      name: "Proxy Climbing",
+      area: "Quarry Bay",
+      address: "Hall C, 2/F, K11 Atelier, 728 King’s Road, Quarry Bay",
+      hours: "Mon 6pm–11pm; Tue–Fri 2pm–11pm; Sat/Sun/PH 10am–8pm",
+      contact: "WhatsApp: +852 6718 8699; Email: sportchain1@gmail.com",
+      type: "Bouldering",
+      coordinates: [22.2922, 114.2084],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Proxy%20Climbing%20K11%20Atelier%20728%20King%27s%20Road%20Quarry%20Bay",
+      appleMaps: "https://maps.apple.com/?q=Proxy%20Climbing%20K11%20Atelier%20728%20King%27s%20Road%20Quarry%20Bay"
+    },
+    {
+      name: "n bouldering",
+      area: "Wan Chai",
+      address: "24/F, Success Commercial Building, 245–251 Hennessy Road, Wan Chai",
+      hours: "Mon–Fri 10:30am–10pm; Sat/Sun/PH 10:30am–8pm",
+      contact: "WhatsApp: +852 6060 1257; Email: info@n-bouldering.com",
+      type: "Bouldering",
+      coordinates: [22.2782, 114.1740],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=n%20bouldering%20Success%20Commercial%20Building%20245%20251%20Hennessy%20Road%20Wan%20Chai",
+      appleMaps: "https://maps.apple.com/?q=n%20bouldering%20Success%20Commercial%20Building%20245%20251%20Hennessy%20Road%20Wan%20Chai"
+    },
+    {
+      name: "Attic V",
+      area: "Wong Chuk Hang",
+      address: "Shop E, G/F, Derrick Industrial Building, 49 Wong Chuk Hang Road",
+      hours: "Mon–Sat 11am–10:30pm; Sun/PH 11am–8pm",
+      contact: "Tel: +852 3101 2918; Email: info@atticv.com.hk",
+      type: "Bouldering",
+      coordinates: [22.2485, 114.1677],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Attic%20V%20Derrick%20Industrial%20Building%2049%20Wong%20Chuk%20Hang%20Road",
+      appleMaps: "https://maps.apple.com/?q=Attic%20V%20Derrick%20Industrial%20Building%2049%20Wong%20Chuk%20Hang%20Road"
+    },
+    {
+      name: "Keep Climbing",
+      area: "Sheung Wan",
+      address: "Unit 6, 2/F, 28 Connaught Road West, Sheung Wan",
+      hours: "Mon–Fri 12:30pm–10:30pm; Sat/Sun/PH 11am–8pm",
+      contact: "Tel: +852 3619 7166; Email: keepclimbinggym@gmail.com",
+      type: "Bouldering",
+      coordinates: [22.2877, 114.1489],
+      infoId: "info-keep-climbing",
+      reviewId: "review-keep-climbing",
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Keep%20Climbing%20Gym%20Unit%206%202%2FF%2028%20Connaught%20Road%20West%20Sheung%20Wan",
+      appleMaps: "https://maps.apple.com/?q=Keep%20Climbing%20Gym%2028%20Connaught%20Road%20West%20Sheung%20Wan"
+    },
+    {
+      name: "Campus Climbing",
+      area: "Jordan",
+      address: "1/F, Jade Suites, 600 Canton Road, Jordan",
+      hours: "Usually 10am–11pm; check monthly calendar",
+      contact: "Tel/WhatsApp: +852 9010 7250; Email: campusclimbing.ltd@gmail.com",
+      type: "Bouldering",
+      coordinates: [22.3057, 114.1687],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Campus%20Climbing%20Jade%20Suites%20600%20Canton%20Road%20Jordan",
+      appleMaps: "https://maps.apple.com/?q=Campus%20Climbing%20Jade%20Suites%20600%20Canton%20Road%20Jordan"
+    },
+    {
+      name: "Project_ Climb & Boulder HK",
+      area: "Kowloon Bay",
+      address: "Room 11, 2/F, Metro Centre I, 32 Lam Hing Street, Kowloon Bay",
+      hours: "Mon–Fri 12pm–11pm; Sat/Sun 10am–9pm",
+      contact: "Email: projectunderscorehk@gmail.com",
+      type: "Bouldering, training boards",
+      coordinates: [22.3233, 114.2096],
+      infoId: "info-project-climb-boulder-hk",
+      reviewId: "review-project-climb-boulder-hk",
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Project%20Climb%20Boulder%20HK%20Room%2011%202%2FF%20Metro%20Centre%20I%2032%20Lam%20Hing%20Street%20Kowloon%20Bay",
+      appleMaps: "https://maps.apple.com/?q=Project%20Climb%20Boulder%20HK%2032%20Lam%20Hing%20Street%20Kowloon%20Bay"
+    },
+    {
+      name: "The Player Climbingym",
+      area: "Mei Foo / Lai Chi Kok",
+      address: "Shops 6B & 6B1, Upper G/F, Lai Chi Kok Bay Garden, 272 Lai King Hill Road",
+      hours: "Mon–Fri 2pm–10:30pm; Sat/Sun/PH 10am–8pm",
+      contact: "WhatsApp: +852 6380 0112; Email: info@theplayerclimbing.com",
+      type: "Bouldering, kids wall, short top-rope wall",
+      coordinates: [22.3372, 114.1402],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=The%20Player%20Climbingym%20Lai%20Chi%20Kok%20Bay%20Garden%20272%20Lai%20King%20Hill%20Road",
+      appleMaps: "https://maps.apple.com/?q=The%20Player%20Climbingym%20Lai%20Chi%20Kok%20Bay%20Garden%20272%20Lai%20King%20Hill%20Road"
+    },
+    {
+      name: "Raccoon Bouldering",
+      area: "Hung Hom / To Kwa Wan",
+      address: "Shops A & B, 200 Ma Tau Wai Road, Hung Hom",
+      hours: "Mon–Sat 11am–11pm; Sun 11am–8pm",
+      contact: "Tel: +852 9610 3290; Email: info@raccoonbouldering.com.hk",
+      type: "Bouldering",
+      coordinates: [22.3153, 114.1878],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Raccoon%20Bouldering%20200%20Ma%20Tau%20Wai%20Road%20Hung%20Hom",
+      appleMaps: "https://maps.apple.com/?q=Raccoon%20Bouldering%20200%20Ma%20Tau%20Wai%20Road%20Hung%20Hom"
+    },
+    {
+      name: "CRUX Boulder Gym",
+      area: "Prince Edward / Sham Shui Po",
+      address: "1/F, Cite 33, 33 Lai Chi Kok Road",
+      hours: "Mon–Sat 11am–12am; Sun/PH 10am–9pm",
+      contact: "Tel: +852 9014 9825; Email: office@cruxhk.com",
+      type: "Bouldering",
+      coordinates: [22.3266, 114.1656],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=CRUX%20Boulder%20Gym%20Cite%2033%2033%20Lai%20Chi%20Kok%20Road",
+      appleMaps: "https://maps.apple.com/?q=CRUX%20Boulder%20Gym%20Cite%2033%2033%20Lai%20Chi%20Kok%20Road"
+    },
+    {
+      name: "Vita Beta Climbing Gym",
+      area: "Tsuen Wan",
+      address: "Unit 2, 1/F, Technology Plaza, 29–35 Sha Tsui Road, Tsuen Wan",
+      hours: "Mon 10am–12am; Tue–Thu 8am–12am; Fri 10am–12am; Sat 24h; Sun 10am–8pm",
+      contact: "Tel: +852 4611 3857; Email: Vitabetahk@gmail.com",
+      type: "Bouldering",
+      coordinates: [22.3704, 114.1178],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Vita%20Beta%20Climbing%20Gym%20Technology%20Plaza%2029%2035%20Sha%20Tsui%20Road%20Tsuen%20Wan",
+      appleMaps: "https://maps.apple.com/?q=Vita%20Beta%20Climbing%20Gym%20Technology%20Plaza%2029%2035%20Sha%20Tsui%20Road%20Tsuen%20Wan"
+    },
+    {
+      name: "Camp Four Bouldering",
+      area: "Sha Tin",
+      address: "Room 305, Koon Wah Mirror Group Building, 2 Yuen Shun Circuit, Sha Tin",
+      hours: "Mon–Fri 11am–11pm; Sat/Sun 10am–8pm",
+      contact: "Email: info@campfourbouldering.com.hk",
+      type: "Bouldering",
+      coordinates: [22.3827, 114.2063],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Camp%20Four%20Bouldering%20Koon%20Wah%20Mirror%20Group%20Building%202%20Yuen%20Shun%20Circuit%20Sha%20Tin",
+      appleMaps: "https://maps.apple.com/?q=Camp%20Four%20Bouldering%20Koon%20Wah%20Mirror%20Group%20Building%202%20Yuen%20Shun%20Circuit%20Sha%20Tin"
+    },
+    {
+      name: "BoulderMAD Climbing Gym",
+      area: "Ngau Tau Kok / Kwun Tong",
+      address: "Rooms 302–303, Westin Centre, 26 Hung To Road, Kwun Tong",
+      hours: "Mon–Fri 11am–11pm; Sat/Sun/PH 10am–8pm",
+      contact: "Tel: +852 6580 3889 / 9667 0945; Email: madventure.hk@gmail.com",
+      type: "Bouldering",
+      coordinates: [22.3125, 114.2198],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=BoulderMAD%20Climbing%20Gym%20Westin%20Centre%2026%20Hung%20To%20Road%20Kwun%20Tong",
+      appleMaps: "https://maps.apple.com/?q=BoulderMAD%20Climbing%20Gym%20Westin%20Centre%2026%20Hung%20To%20Road%20Kwun%20Tong"
+    },
+    {
+      name: "Mizu Climbing 水岩舎",
+      area: "Ho Man Tin",
+      address: "7 Victory Avenue, Ho Man Tin",
+      hours: "Mon–Fri 2pm–11pm; Sat/Sun 10am–8pm",
+      contact: "Tel/WhatsApp: +852 5593 5828; Email: info@mizuclimbing.com",
+      type: "Bouldering, kids top-rope section, training board",
+      coordinates: [22.3195, 114.1760],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=Mizu%20Climbing%207%20Victory%20Avenue%20Ho%20Man%20Tin",
+      appleMaps: "https://maps.apple.com/?q=Mizu%20Climbing%207%20Victory%20Avenue%20Ho%20Man%20Tin"
+    },
+    {
+      name: "MightyB Bouldering",
+      area: "Sham Shui Po",
+      address: "9 Nam Cheong Street, Sham Shui Po",
+      hours: "Daily 10am–11pm",
+      contact: "IG: @mightybbouldering",
+      type: "Bouldering",
+      coordinates: [22.3305, 114.1617],
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=MightyB%20Bouldering%209%20Nam%20Cheong%20Street%20Sham%20Shui%20Po",
+      appleMaps: "https://maps.apple.com/?q=MightyB%20Bouldering%209%20Nam%20Cheong%20Street%20Sham%20Shui%20Po"
+    },
+    {
+      name: "Butterfly Climbing Gym",
+      area: "Kwai Chung",
+      address: "14A, Magnet Place Tower 2, 38–42 Kwai Fung Crescent",
+      hours: "Mon–Fri 11:00–23:00; Sat 10:00–23:00; Sun & Public Holidays 10:00–20:00",
+      contact: "Tel: +852 9591 7218; IG: @butterfly_climbinggym",
+      type: "Bouldering; top rope for kids only",
+      coordinates: [22.355551, 114.125293],
+      infoId: "info-butterfly-climbing-gym",
+      reviewId: "review-butterfly-climbing-gym",
+      googleMaps: "https://www.google.com/maps/search/?api=1&query=14A%20Magnet%20Place%20Tower%202%2038-42%20Kwai%20Fung%20Crescent%20Butterfly%20Climbing%20Gym",
+      appleMaps: "https://maps.apple.com/place?place-id=I616941B56857962&address=Tower+2%2C+38+Kwai+Fung+Crescent%2C+Kwai+Chung%2C+New+Territories%2C+Hong+Kong+SAR%2C+China&coordinate=22.355551%2C114.125293&name=Butterfly+Climbing+Gym&_provider=9902"
     }
-  </script>
+  ];
 
+  const gymMapElement = document.querySelector("#gymMap");
+
+  if (gymMapElement && typeof L !== "undefined") {
+    const gymMap = L.map("gymMap", { scrollWheelZoom: false }).setView([22.3193, 114.1694], 11);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(gymMap);
+
+    const markers = [];
+
+    allGyms.forEach((gym) => {
+      const marker = L.marker(gym.coordinates).addTo(gymMap);
+
+      const basicInfoLink = gym.infoId
+        ? `<a href="#${gym.infoId}">Basic info ↓</a> · `
+        : "";
+
+      const reviewLink = gym.reviewId
+        ? `<a href="#${gym.reviewId}">Review ↓</a><br>`
+        : "";
+
+      marker.bindPopup(`
+        <strong>${gym.name}</strong>
+        ${gym.area}<br>
+        ${gym.type}<br>
+        <span>${gym.address}</span><br>
+        <a href="${gym.googleMaps}" target="_blank" rel="noopener">Google Maps</a> ·
+        <a href="${gym.appleMaps}" target="_blank" rel="noopener">Apple Maps</a><br>
+        ${basicInfoLink}${reviewLink}
+      `);
+
+      markers.push(marker);
+    });
+
+    if (markers.length > 0) {
+      const group = L.featureGroup(markers);
+      gymMap.fitBounds(group.getBounds().pad(0.12));
+    }
+  }
+</script>
+  
   <script src="script.js"></script>
 </body>
 </html>
