@@ -1033,6 +1033,29 @@ allGyms.forEach((gym) => {
   renderLatestCommunityReviews();
   setupGlobalReviewForm();
 </script>
+
+<script>
+  const reviewGymSelect = document.querySelector("#reviewGymSelect");
+
+  if (reviewGymSelect && typeof allGyms !== "undefined") {
+    reviewGymSelect.innerHTML = '<option value="">Choose a gym</option>';
+
+    allGyms.forEach((gym) => {
+      const option = document.createElement("option");
+
+      const gymId = gym.reviewId
+        ? gym.reviewId.replace("review-", "")
+        : gym.infoId
+          ? gym.infoId.replace("info-", "")
+          : slugifyGymName(gym.name);
+
+      option.value = gymId;
+      option.textContent = gym.name;
+
+      reviewGymSelect.appendChild(option);
+    });
+  }
+</script>
   
 <script src="script.js"></script>
 </body>
