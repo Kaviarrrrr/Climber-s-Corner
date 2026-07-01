@@ -825,8 +825,38 @@ allGyms.forEach((gym) => {
         staff: 4,
         comment: "Technical setting, some powerful routes, and thoughtful details around the gym."
       }
+    ],
+    "keep-climbing": [
+      {
+        reviewer: "Climber's Corner",
+        routes: 5,
+        space: 3,
+        staff: 5,
+        comment: "Compact space, excellent routes, and really nice staff."
+      }
+    ],
+    "project-climb-boulder-hk": [
+      {
+        reviewer: "Climber's Corner",
+        routes: 5,
+        space: 4.5,
+        staff: 4,
+        comment: "Excellent routes, solid space, and useful training facilities."
+      }
     ]
   };
+
+  function getGymId(gym) {
+    if (gym.reviewId) {
+      return gym.reviewId.replace("review-", "");
+    }
+
+    if (gym.infoId) {
+      return gym.infoId.replace("info-", "");
+    }
+
+    return slugifyGymName(gym.name);
+  }
 
   function getStoredReviews(gymId) {
     const stored = localStorage.getItem(`reviews-${gymId}`);
@@ -870,46 +900,92 @@ allGyms.forEach((gym) => {
     return roundToOneDecimal(total / reviews.length);
   }
 
-  function renderReviews(gymId) {
-    const ratingBlock = document.querySelector(`[data-gym-rating="${gymId}"]`);
-    if (!ratingBlock) return;
+  function createStarRating(averageScore) {
+    const width = averageScore === null ? 0 : (averageScore / 5) * 100;
 
-    const reviews = getStoredReviews(gymId);
+    return `
+      <span class="star-rating dynamic-star-rating" aria-label="${averageScore === null ? "Not rated yet" : `${averageScore} out of 5 stars`}">
+        <span class="stars-empty">★★★★★</span>
+        <span class="stars-filled" style="width: ${width}%;">★★★★★</span>
+      </span>
+    `;
+  }
 
-    const averageScore = calculateOverallAverage(reviews);
-    const routesAverage = calculateAverage(reviews, "routes");
-    const spaceAverage = calculateAverage(reviews, "space");
-    const staffAverage = calculateAverage(reviews, "staff");
+  function renderCommunityRatings() {
+    const grid = document.querySelector("#communityRatingGrid");
+    if (!grid || typeof allGyms === "undefined") return;
 
-    const averageScoreElement = ratingBlock.querySelector("[data-average-score]");
-    const starFillElement = ratingBlock.querySelector("[data-star-fill]");
-    const routesAverageElement = ratingBlock.querySelector("[data-routes-average]");
-    const spaceAverageElement = ratingBlock.querySelector("[data-space-average]");
-    const staffAverageElement = ratingBlock.querySelector("[data-staff-average]");
-    const reviewCountElement = ratingBlock.querySelector("[data-review-count]");
-    const submittedReviewsElement = ratingBlock.querySelector(`[data-submitted-reviews="${gymId}"]`);
+    grid.innerHTML = allGyms
+      .map((gym) => {
+        const gymId = getGymId(gym);
+        const reviews = getStoredReviews(gymId);
 
-    if (averageScore === null) {
-      averageScoreElement.textContent = "Not rated yet";
-      starFillElement.style.width = "0%";
-    } else {
-      averageScoreElement.textContent = `${averageScore} / 5`;
-      starFillElement.style.width = `${(averageScore / 5) * 100}%`;
-    }
+        const overall = calculateOverallAverage(reviews);
+        const routes = calculateAverage(reviews, "routes");
+        const space = calculateAverage(reviews, "space");
+        const staff = calculateAverage(reviews, "staff");
 
-    routesAverageElement.textContent = routesAverage === null ? "—" : `${routesAverage} / 5`;
-    spaceAverageElement.textContent = spaceAverage === null ? "—" : `${spaceAverage} / 5`;
-    staffAverageElement.textContent = staffAverage === null ? "—" : `${staffAverage} / 5`;
-    reviewCountElement.textContent = reviews.length;
+        return `
+          <article class="community-rating-card" id="rating-${gymId}">
+            <h3>${gym.name}</h3>
 
-    submittedReviewsElement.innerHTML = reviews
+            <div class="rating-summary-line">
+              <span class="average-score">${overall === null ? "Not rated yet" : `${overall} / 5`}</span>
+              ${createStarRating(overall)}
+            </div>
+
+            <div class="score-row rating-breakdown">
+              <span>Routes: ${routes === null ? "—" : `${routes} / 5`}</span>
+              <span>Space: ${space === null ? "—" : `${space} / 5`}</span>
+              <span>Staff/Service: ${staff === null ? "—" : `${staff} / 5`}</span>
+              <span>${reviews.length} ${reviews.length === 1 ? "review" : "reviews"}</span>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  function populateGymReviewDropdown() {
+    const select = document.querySelector("#reviewGymSelect");
+    if (!select || typeof allGyms === "undefined") return;
+
+    allGyms.forEach((gym) => {
+      const option = document.createElement("option");
+      option.value = getGymId(gym);
+      option.textContent = gym.name;
+      select.appendChild(option);
+    });
+  }
+
+  function renderLatestCommunityReviews() {
+    const container = document.querySelector("#latestCommunityReviews");
+    if (!container || typeof allGyms === "undefined") return;
+
+    const allReviews = [];
+
+    allGyms.forEach((gym) => {
+      const gymId = getGymId(gym);
+      const reviews = getStoredReviews(gymId);
+
+      reviews.forEach((review) => {
+        allReviews.push({
+          ...review,
+          gymName: gym.name
+        });
+      });
+    });
+
+    container.innerHTML = allReviews
+      .slice(-8)
+      .reverse()
       .map((review) => {
         const reviewer = review.reviewer || "Anonymous climber";
         const overall = roundToOneDecimal(calculateOverallReviewAverage(review));
 
         return `
           <article class="user-review">
-            <strong>${reviewer}</strong>
+            <strong>${review.gymName} — ${reviewer}</strong>
             <span>${overall} / 5 overall · Routes ${review.routes} · Space ${review.space} · Staff ${review.staff}</span>
             ${review.comment ? `<p>${review.comment}</p>` : ""}
           </article>
@@ -918,38 +994,44 @@ allGyms.forEach((gym) => {
       .join("");
   }
 
-  function setupReviewForms() {
-    const forms = document.querySelectorAll("[data-review-form]");
+  function setupGlobalReviewForm() {
+    const form = document.querySelector("#globalReviewForm");
+    if (!form) return;
 
-    forms.forEach((form) => {
-      const gymId = form.dataset.reviewForm;
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
 
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
+      const formData = new FormData(form);
+      const gymId = formData.get("gymId");
 
-        const formData = new FormData(form);
+      const newReview = {
+        reviewer: formData.get("reviewer").trim(),
+        routes: Number(formData.get("routes")),
+        space: Number(formData.get("space")),
+        staff: Number(formData.get("staff")),
+        comment: formData.get("comment").trim()
+      };
 
-        const newReview = {
-          reviewer: formData.get("reviewer").trim(),
-          routes: Number(formData.get("routes")),
-          space: Number(formData.get("space")),
-          staff: Number(formData.get("staff")),
-          comment: formData.get("comment").trim()
-        };
+      const reviews = getStoredReviews(gymId);
+      reviews.push(newReview);
+      saveStoredReviews(gymId, reviews);
 
-        const reviews = getStoredReviews(gymId);
-        reviews.push(newReview);
-        saveStoredReviews(gymId, reviews);
+      form.reset();
 
-        form.reset();
-        renderReviews(gymId);
-      });
+      renderCommunityRatings();
+      renderLatestCommunityReviews();
 
-      renderReviews(gymId);
+      const ratingCard = document.querySelector(`#rating-${gymId}`);
+      if (ratingCard) {
+        ratingCard.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     });
   }
 
-  setupReviewForms();
+  populateGymReviewDropdown();
+  renderCommunityRatings();
+  renderLatestCommunityReviews();
+  setupGlobalReviewForm();
 </script>
   
 <script src="script.js"></script>
