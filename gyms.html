@@ -1038,19 +1038,29 @@ function updateMapPopupsWithRatings() {
 
     marker.setPopupContent(`
       <strong>${gym.name}</strong>
-      <div class="popup-line">${gym.area}</div>
-      <div class="popup-line">${gym.type}</div>
+
       ${popupRating}
-      <div class="popup-line">${gym.address}</div>
-      <div class="popup-line"><strong class="popup-label">Opening hours:</strong> ${gym.hours}</div>
+
+      <div class="popup-line">${gym.area} · ${gym.type}</div>
+
+      <div class="popup-section">
+        <div class="popup-section-title">Opening hours</div>
+        <div>${gym.hours}</div>
+      </div>
+
+    <div class="popup-section">
+      <div class="popup-section-title">Address</div>
+      <div>${gym.address}</div>
       <div class="popup-links">
         <a href="${gym.googleMaps}" target="_blank" rel="noopener">Google Maps</a> ·
         <a href="${gym.appleMaps}" target="_blank" rel="noopener">Apple Maps</a>
       </div>
-      <div class="popup-links">
-        <a href="#${infoId}">Basic info ↓</a>${reviewLink}
-      </div>
-    `);
+    </div>
+
+    <div class="popup-links">
+      <a href="#${infoId}">Basic info ↓</a>${reviewLink}
+    </div>
+  `);
   });
 }
 
