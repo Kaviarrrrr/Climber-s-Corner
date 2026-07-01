@@ -1082,15 +1082,34 @@ function updateMapPopupsWithRatings() {
   });
 }
 
-  populateGymReviewDropdown();
-  renderLatestCommunityReviews();
-  setupGlobalReviewForm();
-  updateMapPopupsWithRatings();
+function updateReviewCardScores() {
+  const scoreRows = document.querySelectorAll("[data-card-score]");
+
+  scoreRows.forEach((row) => {
+    const gymId = row.dataset.cardScore;
+    const reviews = getStoredReviews(gymId);
+
+    const overall = calculateOverallAverage(reviews);
+    const routes = calculateAverage(reviews, "routes");
+    const space = calculateAverage(reviews, "space");
+    const staff = calculateAverage(reviews, "staff");
+
+    const overallElement = row.querySelector("[data-card-overall]");
+    const routesElement = row.querySelector("[data-card-routes]");
+    const spaceElement = row.querySelector("[data-card-space]");
+    const staffElement = row.querySelector("[data-card-staff]");
+
+    overallElement.textContent = overall === null ? "Not rated yet" : `${overall} / 5`;
+    routesElement.textContent = routes === null ? "—" : `${routes} / 5`;
+    spaceElement.textContent = space === null ? "—" : `${space} / 5`;
+    staffElement.textContent = staff === null ? "—" : `${staff} / 5`;
+  });
+}
   
   populateGymReviewDropdown();
-  renderLatestCommunityReviews();
   setupGlobalReviewForm();
   updateMapPopupsWithRatings();
+  updateReviewCardScores();
 </script>
 
 <script>
