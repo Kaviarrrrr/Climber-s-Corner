@@ -684,6 +684,14 @@
     }
   ];
 
+  function slugifyGymName(name) {
+  return name
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+  
   const gymMapElement = document.querySelector("#gymMap");
 
   if (gymMapElement && typeof L !== "undefined") {
